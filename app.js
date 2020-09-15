@@ -36,7 +36,7 @@ function selectProducts(items){
 	var displayedProducts = [];
 
 	//math to calculate desired width/height of photos
-	var calculateWidth = (100 / items) - items;
+	var calculateWidth = (100 - (items+1)) / items;
 	var viewWidth = String(calculateWidth)+'vw';
 
 	function doTheDomStuff(key){
