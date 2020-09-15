@@ -1,5 +1,4 @@
 var productImg = {};
-var bufferDict = {};
 var roundsAllowed = 25;
 var roundCount = roundsAllowed;
 
@@ -31,14 +30,29 @@ var usb = new Product('Tentacle USB Plugin','usb', 'images/usb.gif');
 var waterCan = new Product('Water Can','waterCan', 'images/water-can.jpg');
 var wineGlass = new Product('Awkward Wine Glass','wineGlass', 'images/wine-glass.jpg');
 
-function selectProducts(items){
+function selectProducts(items, hasRan){
+	var bufferDict = {};
 	var displayedProducts = [];
+	//create an array of the key names in productImg
+	var keychainShow = Object.keys(productImg);
+	//remove previously used keys; will always be last indices if ran before
+	if (hasRan) {
+		for (var i = 0; i < items; i++){
+			keychainShow.pop();
+		}
+	}
 
 	//math to calculate desired width/height of photos
 	var calculateWidth = ((100 - (items+2)) / items) / 1.5;
 	var viewWidth = String(calculateWidth)+'vw';
 
 	function doTheDomStuff(key){
+		for (var i = 0; i < keychainShow.length; i++){
+			if (keychainShow[i] == key) {
+				keychainShow.splice(i, 1);
+			}
+		}
+
 		//write the dom to pull images from the urls; first get the div container
 		var productDisplay = document.getElementById('productDisplay');
 
@@ -65,12 +79,10 @@ function selectProducts(items){
 	}
 
 	for (var i = 0; i < items; i++){
-		//create an array of the key names in productImg
-		var keychain = Object.keys(productImg);
 		//create a random index in the length of productImg
-		var useIndex = Math.floor(Math.random()*keychain.length);
-		//create a variable to simplify further use of keychain at useIndex
-		var currentKey = keychain[useIndex];
+		var useIndex = Math.floor(Math.random()*keychainShow.length);
+		//create a variable to simplify further use of keychainShow at useIndex
+		var currentKey = keychainShow[useIndex];
 		doTheDomStuff(currentKey);
 	}
 	var deletedPairs = Object.entries(bufferDict); //if 3 items will be length 6; loop will count 0, 2,
@@ -83,7 +95,7 @@ function selectProducts(items){
 
 function registerVote(displayedProducts, selectedProduct){
 	//delete loaded images
-	var keychain = Object.keys(productImg);
+	var keychainVote = Object.keys(productImg);
 	var productDisplay = document.getElementById('productDisplay');
 	productDisplay.innerHTML='';
 	//reduce rounds left
@@ -95,30 +107,110 @@ function registerVote(displayedProducts, selectedProduct){
 	}
 
 	if (roundCount) {
-		selectProducts(displayedProducts.length);
+		selectProducts(displayedProducts.length, 1);
 	} else {
 		// roundCount = roundsAllowed;
-		for (var i = 0; i < keychain.length; i++){
-			var itemUserName = eval(keychain[i]+'.name');
-			var itemSelected = eval(keychain[i]+'.selected');
-			var itemShown = eval(keychain[i]+'.shown');
+		var dataToAnalyze = [];
+		for (var i = 0; i < keychainVote.length; i++){
+			var itemUserName = eval(keychainVote[i]+'.name');
+			var itemSelected = eval(keychainVote[i]+'.selected');
+			var itemShown = eval(keychainVote[i]+'.shown');
+			dataToAnalyze.push(itemUserName);
+			dataToAnalyze.push(itemSelected);
 			var newContainer = document.createElement('div');
-			newContainer.setAttribute('style', 'width:31vw;height:31vw;margin-left:1vw;margin-top:1vw;display:inline-block;border-width:2px;border-style:solid;background-color:lightgrey')
+			newContainer.setAttribute('style', 'width:31vw;height:44vw;margin-left:1vw;margin-top:1vw;display:inline-block;border-width:2px;border-style:solid;background-color:lightgrey;position:relative;')
 			productDisplay.append(newContainer);
 			var newImage = document.createElement('img');
 			newContainer.append(newImage);
-			newImage.setAttribute('src', productImg[keychain[i]]);
-			newImage.setAttribute('style', 'margin-left:4vw;margin-top:3vw;width:22vw;height:22vw;border:2px solid black;');
+			newImage.setAttribute('src', productImg[keychainVote[i]]);
+			newImage.setAttribute('style', 'margin-left:4vw;margin-top:2vw;width:22vw;height:22vw;border:2px solid black;');
 			var imageStats = document.createElement('p');
 			imageStats.setAttribute('class', 'productStats');
-			imageStats.setAttribute('style', 'width:26vw;height:5vw;margin-left:3vw;margin-top:1vw;text-align:center;font-size:1.5vw;');
+			imageStats.setAttribute('style', 'width:26vw;height:4vw;margin-left:3vw;margin-top:1vw;text-align:center;font-size:1.5vw;');
 			newContainer.append(imageStats);
 			imageStats.textContent = itemUserName+' had '+itemSelected+' votes and was shown '+itemShown+' times';
+			var chartContainer = document.createElement('div');
+			newContainer.append(chartContainer);
+			chartContainer.setAttribute('style', 'margin-left:4vw;margin-top:1vw;height:22vw;width:22vw;');			
+			console.log(newImage.height);
+
+			var newChart = document.createElement('canvas');
+			chartContainer.append(newChart);
+			var ctx = newChart.getContext('2d');
+			var myChart = new Chart(ctx, {
+				type:'bar',
+				data: {
+					labels: ['Shown', 'Selected'],
+					datasets: [{
+						label: 'number of times', 
+						data: [itemShown, itemSelected],
+						backgroundColor: [
+							'rgba(204,204,0)',
+							'rgba(51, 204, 51)',
+						],
+						borderColor: [
+							'rgba(0,0,0)',
+							'rgba(0,0,0)',
+						],
+						borderWidth: 1
+					}]
+				},
+				options: {
+					scales: {
+						yAxes: [{
+							ticks: {
+								beginAtZero: true
+							}
+						}]
+					}
+				}
+			});
+
 		}
+		var dataAnalysis = document.getElementById('dataAnalysis');
+
+		var doughnutChart = document.createElement('canvas');
+		dataAnalysis.append(doughnutChart);
+		var ctx2 = doughnutChart.getContext('2d');
+		
+		var myDoughnutChart = new Chart(ctx2, {
+			type:'doughnut',
+			data:  {
+				datasets: [{
+					data: [dataToAnalyze[1], dataToAnalyze[3], dataToAnalyze[5], dataToAnalyze[7], dataToAnalyze[9], dataToAnalyze[11], dataToAnalyze[13], dataToAnalyze[15], dataToAnalyze[17], dataToAnalyze[19], dataToAnalyze[21], dataToAnalyze[23], dataToAnalyze[25], dataToAnalyze[27], dataToAnalyze[29], dataToAnalyze[31], dataToAnalyze[33], dataToAnalyze[35], dataToAnalyze[37], dataToAnalyze[39]],
+					backgroundColor: [
+						'rgba(204,204,0)',
+						'rgba(51, 204, 51)',
+						'rgba(77,77,255)',
+						'rgba(153,102,0)',
+						'rgba(255,170,0)',
+						'rgba(255,0,0)',
+						'rgba(77,0,0)',
+						'rgba(255,102,204)',
+						'rgba(102,0,68)',
+						'rgba(153,153,102)',
+						'rgba(0,179,60)',
+						'rgba(102,153,153)',
+						'rgba(0,255,255)',
+						'rgba(102,102,153)',
+						'rgba(204,102,102)',
+						'rgba(115,153,0)',
+						'rgba(51,255,204)',
+						'rgba(102,102,255)',
+						'rgba(255,204,204)',
+						'rgba(51,34,0)'
+					]
+				}],
+
+				labels: [
+					dataToAnalyze[0], dataToAnalyze[2], dataToAnalyze[4], dataToAnalyze[6], dataToAnalyze[8], dataToAnalyze[10], dataToAnalyze[12], dataToAnalyze[14], dataToAnalyze[16], dataToAnalyze[18], dataToAnalyze[20], dataToAnalyze[22], dataToAnalyze[24], dataToAnalyze[26], dataToAnalyze[28], dataToAnalyze[30], dataToAnalyze[32], dataToAnalyze[34], dataToAnalyze[36], dataToAnalyze[38]
+				]
+			}
+		});
 	}
 }
 
 var userPrompt = prompt('how many products should be shown at once?');
 
 var numProducts = parseInt(userPrompt);
-selectProducts(numProducts);
+selectProducts(numProducts, 0);
