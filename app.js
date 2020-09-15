@@ -1,5 +1,4 @@
 var productImg = {};
-var bufferDict = {};
 var roundsAllowed = 25;
 var roundCount = roundsAllowed;
 
@@ -32,6 +31,7 @@ var waterCan = new Product('Water Can','waterCan', 'images/water-can.jpg');
 var wineGlass = new Product('Awkward Wine Glass','wineGlass', 'images/wine-glass.jpg');
 
 function selectProducts(items){
+	var bufferDict = {};
 	var displayedProducts = [];
 
 	//math to calculate desired width/height of photos
