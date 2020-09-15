@@ -44,6 +44,7 @@ function selectProducts(items){
 
 		//Now create the image and assign attributes
 		var newImage = document.createElement('img');
+		newImage.setAttribute('class', 'displayedProduct');
 		newImage.setAttribute('src', productImg[key]);
 		newImage.setAttribute('style', 'width:'+viewWidth+';height:'+viewWidth+';margin-left:1vw;margin-top:1vw;');
 		newImage.setAttribute('float', 'left');
@@ -102,14 +103,14 @@ function registerVote(displayedProducts, selectedProduct){
 			var itemSelected = eval(keychain[i]+'.selected');
 			var itemShown = eval(keychain[i]+'.shown');
 			var newContainer = document.createElement('div');
-			newContainer.setAttribute('display', 'inline-block');
-			newContainer.setAttribute('float', 'left');
+			newContainer.setAttribute('style', 'width:32vw;height:32vw;margin-left:1vw;display:inline-block;')
 			productDisplay.append(newContainer);
 			var newImage = document.createElement('img');
 			newContainer.append(newImage);
 			newImage.setAttribute('src', productImg[keychain[i]]);
-			newImage.setAttribute('style', 'margin-left:1vw;margin-top:1vw;width:15vw;height:15vw;');
+			newImage.setAttribute('style', 'margin-left:3vw;margin-top:1vw;width:26vw;height:26vw;');
 			var imageStats = document.createElement('p');
+			imageStats.setAttribute('style', 'width:26vw;height:5vw;margin-left:3vw;text-align:center;font-size:1.5vw;');
 			newContainer.append(imageStats);
 			imageStats.textContent = itemUserName+' had '+itemSelected+' votes and was shown '+itemShown+' times';
 		}
