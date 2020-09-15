@@ -35,7 +35,7 @@ function selectProducts(items){
 	var displayedProducts = [];
 
 	//math to calculate desired width/height of photos
-	var calculateWidth = (100 - (items+2)) / items;
+	var calculateWidth = ((100 - (items+2)) / items) / 1.5;
 	var viewWidth = String(calculateWidth)+'vw';
 
 	function doTheDomStuff(key){
@@ -46,7 +46,7 @@ function selectProducts(items){
 		var newImage = document.createElement('img');
 		newImage.setAttribute('class', 'displayedProduct');
 		newImage.setAttribute('src', productImg[key]);
-		newImage.setAttribute('style', 'width:'+viewWidth+';height:'+viewWidth+';margin-left:1vw;margin-top:1vw;');
+		newImage.setAttribute('style', 'width:'+viewWidth+';height:'+viewWidth+';margin-left:8vw;margin-top:1vw;');
 		newImage.setAttribute('float', 'left');
 
 		//add the displayed element to an array for later reference
@@ -103,15 +103,15 @@ function registerVote(displayedProducts, selectedProduct){
 			var itemSelected = eval(keychain[i]+'.selected');
 			var itemShown = eval(keychain[i]+'.shown');
 			var newContainer = document.createElement('div');
-			newContainer.setAttribute('style', 'width:31vw;height:31vw;margin-left:1vw;display:inline-block;border-width:2px;border-style:solid')
+			newContainer.setAttribute('style', 'width:31vw;height:31vw;margin-left:1vw;margin-top:1vw;display:inline-block;border-width:2px;border-style:solid')
 			productDisplay.append(newContainer);
 			var newImage = document.createElement('img');
 			newContainer.append(newImage);
 			newImage.setAttribute('src', productImg[keychain[i]]);
-			newImage.setAttribute('style', 'margin-left:4vw;margin-top:4vw;width:22vw;height:22vw;');
+			newImage.setAttribute('style', 'margin-left:4vw;margin-top:3vw;width:22vw;height:22vw;border:2px solid black;');
 			var imageStats = document.createElement('p');
 			imageStats.setAttribute('class', 'productStats');
-			imageStats.setAttribute('style', 'width:26vw;height:5vw;margin-left:3vw;text-align:center;font-size:1.5vw;');
+			imageStats.setAttribute('style', 'width:26vw;height:5vw;margin-left:3vw;margin-top:1vw;text-align:center;font-size:1.5vw;');
 			newContainer.append(imageStats);
 			imageStats.textContent = itemUserName+' had '+itemSelected+' votes and was shown '+itemShown+' times';
 		}
