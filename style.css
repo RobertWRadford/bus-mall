@@ -5,3 +5,7 @@
 .productStats {
 	font-family: 'Harlow Solid Italic';
 }
+
+canvas {
+	position: relative;
+}
