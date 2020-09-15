@@ -103,7 +103,7 @@ function registerVote(displayedProducts, selectedProduct){
 			var itemSelected = eval(keychain[i]+'.selected');
 			var itemShown = eval(keychain[i]+'.shown');
 			var newContainer = document.createElement('div');
-			newContainer.setAttribute('style', 'width:31vw;height:31vw;margin-left:1vw;margin-top:1vw;display:inline-block;border-width:2px;border-style:solid')
+			newContainer.setAttribute('style', 'width:31vw;height:31vw;margin-left:1vw;margin-top:1vw;display:inline-block;border-width:2px;border-style:solid;background-color:lightgrey;')
 			productDisplay.append(newContainer);
 			var newImage = document.createElement('img');
 			newContainer.append(newImage);
