@@ -31,7 +31,6 @@ var usb = new Product('Tentacle USB Plugin','usb', 'images/usb.gif');
 var waterCan = new Product('Water Can','waterCan', 'images/water-can.jpg');
 var wineGlass = new Product('Awkward Wine Glass','wineGlass', 'images/wine-glass.jpg');
 
-
 function selectProducts(items){
 	var displayedProducts = [];
 
@@ -67,15 +66,11 @@ function selectProducts(items){
 	for (var i = 0; i < items; i++){
 		//create an array of the key names in productImg
 		var keychain = Object.keys(productImg);
-
 		//create a random index in the length of productImg
 		var useIndex = Math.floor(Math.random()*keychain.length);
-
 		//create a variable to simplify further use of keychain at useIndex
 		var currentKey = keychain[useIndex];
-
 		doTheDomStuff(currentKey);
-
 	}
 	var deletedPairs = Object.entries(bufferDict); //if 3 items will be length 6; loop will count 0, 2,
 	// console.log(deletedPairs);
