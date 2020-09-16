@@ -1,6 +1,7 @@
 var productImg = {};
 var roundsAllowed = 25;
 var roundCount = roundsAllowed;
+var productDisplay = document.getElementById('productDisplay');
 
 function Product(userName, codeName, imgUrl){
 	this.name = userName;
@@ -53,10 +54,7 @@ function selectProducts(items, hasRan){
 			}
 		}
 
-		//write the dom to pull images from the urls; first get the div container
-		var productDisplay = document.getElementById('productDisplay');
-
-		//Now create the image and assign attributes
+		//Create the image and assign attributes
 		var newImage = document.createElement('img');
 		newImage.setAttribute('class', 'displayedProduct');
 		newImage.setAttribute('src', productImg[key]);
@@ -96,7 +94,6 @@ function selectProducts(items, hasRan){
 function registerVote(displayedProducts, selectedProduct){
 	//delete loaded images
 	var keychainVote = Object.keys(productImg);
-	var productDisplay = document.getElementById('productDisplay');
 	productDisplay.innerHTML='';
 	//reduce rounds left
 	roundCount--;
@@ -118,20 +115,20 @@ function registerVote(displayedProducts, selectedProduct){
 			dataToAnalyze.push(itemUserName);
 			dataToAnalyze.push(itemSelected);
 			var newContainer = document.createElement('div');
-			newContainer.setAttribute('style', 'width:31vw;height:44vw;margin-left:1vw;margin-top:1vw;display:inline-block;border-width:2px;border-style:solid;background-color:lightgrey;position:relative;')
+			newContainer.setAttribute('style', 'width:24vw;height:32vw;margin-left:6vw;margin-top:2vw;display:inline-block;border-width:2px;border-style:solid;background-color:lightgrey;position:relative;')
 			productDisplay.append(newContainer);
 			var newImage = document.createElement('img');
 			newContainer.append(newImage);
 			newImage.setAttribute('src', productImg[keychainVote[i]]);
-			newImage.setAttribute('style', 'margin-left:4vw;margin-top:2vw;width:22vw;height:22vw;border:2px solid black;');
+			newImage.setAttribute('style', 'margin-left:4vw;margin-top:2vw;width:16vw;height:16vw;border:2px solid black;');
 			var imageStats = document.createElement('p');
 			imageStats.setAttribute('class', 'productStats');
-			imageStats.setAttribute('style', 'width:26vw;height:4vw;margin-left:3vw;margin-top:1vw;text-align:center;font-size:1.5vw;');
+			imageStats.setAttribute('style', 'width:18vw;height:3vw;margin-left:2vw;margin-top:1vw;text-align:center;font-size:1vw;');
 			newContainer.append(imageStats);
 			imageStats.textContent = itemUserName+' had '+itemSelected+' votes and was shown '+itemShown+' times';
 			var chartContainer = document.createElement('div');
 			newContainer.append(chartContainer);
-			chartContainer.setAttribute('style', 'margin-left:4vw;margin-top:1vw;height:22vw;width:22vw;');			
+			chartContainer.setAttribute('style', 'margin-left:4vw;margin-top:1vw;height:16vw;width:16vw;');			
 			console.log(newImage.height);
 
 			var newChart = document.createElement('canvas');
@@ -210,7 +207,35 @@ function registerVote(displayedProducts, selectedProduct){
 	}
 }
 
-var userPrompt = prompt('how many products should be shown at once?');
+window.scrollTo(0,0);
 
-var numProducts = parseInt(userPrompt);
-selectProducts(numProducts, 0);
+var promptForms = document.createElement('form');
+productDisplay.append(promptForms);
+promptForms.setAttribute('style', 'margin-left:25vw;margin-top:5vw;');
+var promptField = document.createElement('fieldset');
+promptForms.append(promptField);
+promptField.setAttribute('style', 'width:50vw;height:12vw;border:2px solid black;');
+var promptLegend = document.createElement('legend');
+promptField.append(promptLegend);
+promptLegend.setAttribute('style', 'font-size:1.5vw;margin-left:10vw;');
+promptLegend.textContent = 'How many items do you want to see at once?';
+var promptInput = document.createElement('input');
+promptField.append(promptInput);
+promptInput.setAttribute('type', 'number');
+promptInput.setAttribute('max', '8');
+promptInput.setAttribute('min', '2');
+promptInput.setAttribute('style', 'margin-left:8vw;margin-top:4vw;font-size:1.5vw;width:20vw;');
+promptInput.required = true;
+var promptSubmit = document.createElement('input');
+promptField.append(promptSubmit);
+promptSubmit.setAttribute('type', 'submit');
+promptSubmit.setAttribute('value', 'Submit');
+promptSubmit.setAttribute('style', 'margin-left:2vw;font-size:1vw;');
+
+promptForms.addEventListener('submit', function(e) {
+			e.preventDefault();
+			var numProducts = parseInt(promptInput.value);
+			productDisplay.innerHTML = '';
+			selectProducts(numProducts, 0);;
+		}, false);
+
