@@ -31,6 +31,7 @@ var waterCan = new Product('Water Can','waterCan', 'images/water-can.jpg');
 var wineGlass = new Product('Awkward Wine Glass','wineGlass', 'images/wine-glass.jpg');
 
 function selectProducts(items, hasRan){
+	window.scrollTo(0,0);
 	var bufferDict = {};
 	var displayedProducts = [];
 	//create an array of the key names in productImg
@@ -118,20 +119,20 @@ function registerVote(displayedProducts, selectedProduct){
 			dataToAnalyze.push(itemUserName);
 			dataToAnalyze.push(itemSelected);
 			var newContainer = document.createElement('div');
-			newContainer.setAttribute('style', 'width:31vw;height:44vw;margin-left:1vw;margin-top:1vw;display:inline-block;border-width:2px;border-style:solid;background-color:lightgrey;position:relative;')
+			newContainer.setAttribute('style', 'width:24vw;height:32vw;margin-left:6vw;margin-top:2vw;display:inline-block;border-width:2px;border-style:solid;background-color:lightgrey;position:relative;')
 			productDisplay.append(newContainer);
 			var newImage = document.createElement('img');
 			newContainer.append(newImage);
 			newImage.setAttribute('src', productImg[keychainVote[i]]);
-			newImage.setAttribute('style', 'margin-left:4vw;margin-top:2vw;width:22vw;height:22vw;border:2px solid black;');
+			newImage.setAttribute('style', 'margin-left:4vw;margin-top:2vw;width:16vw;height:16vw;border:2px solid black;');
 			var imageStats = document.createElement('p');
 			imageStats.setAttribute('class', 'productStats');
-			imageStats.setAttribute('style', 'width:26vw;height:4vw;margin-left:3vw;margin-top:1vw;text-align:center;font-size:1.5vw;');
+			imageStats.setAttribute('style', 'width:18vw;height:3vw;margin-left:2vw;margin-top:1vw;text-align:center;font-size:1vw;');
 			newContainer.append(imageStats);
 			imageStats.textContent = itemUserName+' had '+itemSelected+' votes and was shown '+itemShown+' times';
 			var chartContainer = document.createElement('div');
 			newContainer.append(chartContainer);
-			chartContainer.setAttribute('style', 'margin-left:4vw;margin-top:1vw;height:22vw;width:22vw;');			
+			chartContainer.setAttribute('style', 'margin-left:4vw;margin-top:1vw;height:16vw;width:16vw;');			
 			console.log(newImage.height);
 
 			var newChart = document.createElement('canvas');
@@ -210,7 +211,11 @@ function registerVote(displayedProducts, selectedProduct){
 	}
 }
 
-var userPrompt = prompt('how many products should be shown at once?');
+window.addEventListener('unload', function() {
+			window.scrollTo(0,0);
+		}, false);
 
+var userPrompt = prompt('how many products should be shown at once?');
 var numProducts = parseInt(userPrompt);
+
 selectProducts(numProducts, 0);
