@@ -1,6 +1,7 @@
 var productImg = {};
 var roundsAllowed = 25;
 var roundCount = roundsAllowed;
+var productDisplay = document.getElementById('productDisplay');
 
 function Product(userName, codeName, imgUrl){
 	this.name = userName;
@@ -31,7 +32,6 @@ var waterCan = new Product('Water Can','waterCan', 'images/water-can.jpg');
 var wineGlass = new Product('Awkward Wine Glass','wineGlass', 'images/wine-glass.jpg');
 
 function selectProducts(items, hasRan){
-	window.scrollTo(0,0);
 	var bufferDict = {};
 	var displayedProducts = [];
 	//create an array of the key names in productImg
@@ -54,10 +54,7 @@ function selectProducts(items, hasRan){
 			}
 		}
 
-		//write the dom to pull images from the urls; first get the div container
-		var productDisplay = document.getElementById('productDisplay');
-
-		//Now create the image and assign attributes
+		//Create the image and assign attributes
 		var newImage = document.createElement('img');
 		newImage.setAttribute('class', 'displayedProduct');
 		newImage.setAttribute('src', productImg[key]);
@@ -97,7 +94,6 @@ function selectProducts(items, hasRan){
 function registerVote(displayedProducts, selectedProduct){
 	//delete loaded images
 	var keychainVote = Object.keys(productImg);
-	var productDisplay = document.getElementById('productDisplay');
 	productDisplay.innerHTML='';
 	//reduce rounds left
 	roundCount--;
@@ -211,11 +207,35 @@ function registerVote(displayedProducts, selectedProduct){
 	}
 }
 
-window.addEventListener('unload', function() {
-			window.scrollTo(0,0);
+window.scrollTo(0,0);
+
+var promptForms = document.createElement('form');
+productDisplay.append(promptForms);
+promptForms.setAttribute('style', 'margin-left:25vw;margin-top:5vw;');
+var promptField = document.createElement('fieldset');
+promptForms.append(promptField);
+promptField.setAttribute('style', 'width:50vw;height:12vw;border:2px solid black;');
+var promptLegend = document.createElement('legend');
+promptField.append(promptLegend);
+promptLegend.setAttribute('style', 'font-size:1.5vw;margin-left:10vw;');
+promptLegend.textContent = 'How many items do you want to see at once?';
+var promptInput = document.createElement('input');
+promptField.append(promptInput);
+promptInput.setAttribute('type', 'number');
+promptInput.setAttribute('max', '8');
+promptInput.setAttribute('min', '2');
+promptInput.setAttribute('style', 'margin-left:8vw;margin-top:4vw;font-size:1.5vw;width:20vw;');
+promptInput.required = true;
+var promptSubmit = document.createElement('input');
+promptField.append(promptSubmit);
+promptSubmit.setAttribute('type', 'submit');
+promptSubmit.setAttribute('value', 'Submit');
+promptSubmit.setAttribute('style', 'margin-left:2vw;font-size:1vw;');
+
+promptForms.addEventListener('submit', function(e) {
+			e.preventDefault();
+			var numProducts = parseInt(promptInput.value);
+			productDisplay.innerHTML = '';
+			selectProducts(numProducts, 0);;
 		}, false);
 
-var userPrompt = prompt('how many products should be shown at once?');
-var numProducts = parseInt(userPrompt);
-
-selectProducts(numProducts, 0);
