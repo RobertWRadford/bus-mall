@@ -195,7 +195,7 @@ function registerVote(displayedProducts, selectedProduct){
 							label: 'Percentage selected when shown', 
 							data: [(itemTotalSelected/itemTotalShown)*100, (itemSelected/itemShown)*100],
 							backgroundColor: [
-								'rgba(204,204,0)',
+								'rgba(255,105,55)',
 								'rgba(51, 204, 51)',
 							],
 							borderColor: [
