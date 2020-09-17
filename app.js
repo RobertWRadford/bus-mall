@@ -2,6 +2,7 @@ var productImg = {};
 var roundsAllowed = 25;
 var roundCount = roundsAllowed;
 var productDisplay = document.getElementById('productDisplay');
+var treasureChest = window.localStorage;
 
 function Product(userName, codeName, imgUrl){
 	this.name = userName;
@@ -40,6 +41,12 @@ function selectProducts(items, hasRan){
 	if (hasRan) {
 		for (var i = 0; i < items; i++){
 			keychainShow.pop();
+		}
+	} else if (treasureChest.getItem(keychainShow[0])) {
+		for (var i = 0; i < keychainShow.length; i++) {
+			var importedData = JSON.parse(treasureChest.getItem(keychainShow[i]));
+			eval(keychainShow[i]+'.shown = importedData[0]');
+			eval(keychainShow[i]+'.selected = importedData[1]');
 		}
 	}
 
@@ -112,6 +119,9 @@ function registerVote(displayedProducts, selectedProduct){
 			var itemUserName = eval(keychainVote[i]+'.name');
 			var itemSelected = eval(keychainVote[i]+'.selected');
 			var itemShown = eval(keychainVote[i]+'.shown');
+			//store final data for all elements in local storage
+			treasureChest.setItem(keychainVote[i], JSON.stringify([itemShown, itemSelected]));
+			//continue making results
 			dataToAnalyze.push(itemUserName);
 			dataToAnalyze.push(itemSelected);
 			var newContainer = document.createElement('div');
@@ -207,6 +217,7 @@ function registerVote(displayedProducts, selectedProduct){
 	}
 }
 
+window.focus();
 window.scrollTo(0,0);
 
 var promptForms = document.createElement('form');
