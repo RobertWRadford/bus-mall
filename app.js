@@ -2,6 +2,10 @@ var productImg = {};
 var roundsAllowed = 25;
 var roundCount = roundsAllowed;
 var productDisplay = document.getElementById('productDisplay');
+var dataAnalysis = document.getElementById('dataAnalysis');
+dataAnalysis.style.display = 'none';
+var treasureChest = window.localStorage;
+var hasStored = false;
 
 function Product(userName, codeName, imgUrl){
 	this.name = userName;
@@ -40,6 +44,14 @@ function selectProducts(items, hasRan){
 	if (hasRan) {
 		for (var i = 0; i < items; i++){
 			keychainShow.pop();
+		}
+	}  
+	if (treasureChest.getItem(keychainShow[0])) {
+		for (var i = 0; i < keychainShow.length; i++) {
+			hasStored = true;
+			var importedData = JSON.parse(treasureChest.getItem(keychainShow[i]));
+			eval(keychainShow[i]+'.totalShown = importedData[0]');
+			eval(keychainShow[i]+'.totalSelected = importedData[1]');
 		}
 	}
 
@@ -94,6 +106,7 @@ function selectProducts(items, hasRan){
 function registerVote(displayedProducts, selectedProduct){
 	//delete loaded images
 	var keychainVote = Object.keys(productImg);
+	var dataToAnalyze = [];
 	productDisplay.innerHTML='';
 	//reduce rounds left
 	roundCount--;
@@ -107,65 +120,157 @@ function registerVote(displayedProducts, selectedProduct){
 		selectProducts(displayedProducts.length, 1);
 	} else {
 		// roundCount = roundsAllowed;
-		var dataToAnalyze = [];
 		for (var i = 0; i < keychainVote.length; i++){
 			var itemUserName = eval(keychainVote[i]+'.name');
 			var itemSelected = eval(keychainVote[i]+'.selected');
 			var itemShown = eval(keychainVote[i]+'.shown');
-			dataToAnalyze.push(itemUserName);
-			dataToAnalyze.push(itemSelected);
-			var newContainer = document.createElement('div');
-			newContainer.setAttribute('style', 'width:24vw;height:32vw;margin-left:6vw;margin-top:2vw;display:inline-block;border-width:2px;border-style:solid;background-color:lightgrey;position:relative;')
-			productDisplay.append(newContainer);
-			var newImage = document.createElement('img');
-			newContainer.append(newImage);
-			newImage.setAttribute('src', productImg[keychainVote[i]]);
-			newImage.setAttribute('style', 'margin-left:4vw;margin-top:2vw;width:16vw;height:16vw;border:2px solid black;');
-			var imageStats = document.createElement('p');
-			imageStats.setAttribute('class', 'productStats');
-			imageStats.setAttribute('style', 'width:18vw;height:3vw;margin-left:2vw;margin-top:1vw;text-align:center;font-size:1vw;');
-			newContainer.append(imageStats);
-			imageStats.textContent = itemUserName+' had '+itemSelected+' votes and was shown '+itemShown+' times';
-			var chartContainer = document.createElement('div');
-			newContainer.append(chartContainer);
-			chartContainer.setAttribute('style', 'margin-left:4vw;margin-top:1vw;height:16vw;width:16vw;');			
-			console.log(newImage.height);
+			//store final data for all elements in local storage
+			if (hasStored) {
+				productDisplay.height = '350vw';
+				var itemTotalSelected = eval(keychainVote[i]+'.totalSelected+'+itemSelected);
+				var itemTotalShown = eval(keychainVote[i]+'.totalShown+'+itemShown);
+				treasureChest.setItem(keychainVote[i], JSON.stringify([itemShown + itemTotalShown, itemSelected + itemTotalSelected]));
+				//continue making results
+				dataToAnalyze.push(itemUserName);
+				dataToAnalyze.push(itemTotalSelected);
+				var newContainer = document.createElement('div');
+				newContainer.setAttribute('style', 'width:24vw;height:48vw;margin-left:6vw;margin-top:2vw;display:inline-block;border-width:2px;border-style:solid;background-color:lightgrey;position:relative;')
+				productDisplay.append(newContainer);
+				var newImage = document.createElement('img');
+				newContainer.append(newImage);
+				newImage.setAttribute('src', productImg[keychainVote[i]]);
+				newImage.setAttribute('style', 'margin-left:4vw;margin-top:2vw;width:16vw;height:16vw;border:2px solid black;');
+				var imageStats = document.createElement('p');
+				imageStats.setAttribute('class', 'productStats');
+				imageStats.setAttribute('style', 'width:18vw;height:3vw;margin-left:2vw;margin-top:1vw;text-align:center;font-size:1vw;');
+				newContainer.append(imageStats);
+				imageStats.textContent = itemUserName+' had '+itemSelected+' votes and was shown '+itemShown+' times. Across all polls '+itemUserName+' had '+itemTotalSelected+' votes and was shown '+itemTotalShown+' times.';
+				var chartContainer = document.createElement('div');
+				newContainer.append(chartContainer);
+				chartContainer.setAttribute('style', 'margin-left:4vw;margin-top:1vw;height:10vw;width:16vw;');	
 
-			var newChart = document.createElement('canvas');
-			chartContainer.append(newChart);
-			var ctx = newChart.getContext('2d');
-			var myChart = new Chart(ctx, {
-				type:'bar',
-				data: {
-					labels: ['Shown', 'Selected'],
-					datasets: [{
-						label: 'number of times', 
-						data: [itemShown, itemSelected],
-						backgroundColor: [
-							'rgba(204,204,0)',
-							'rgba(51, 204, 51)',
-						],
-						borderColor: [
-							'rgba(0,0,0)',
-							'rgba(0,0,0)',
-						],
-						borderWidth: 1
-					}]
-				},
-				options: {
-					scales: {
-						yAxes: [{
-							ticks: {
-								beginAtZero: true
-							}
+				var newChart = document.createElement('canvas');
+				chartContainer.append(newChart);
+				var ctx = newChart.getContext('2d');
+				var myChart = new Chart(ctx, {
+					type:'bar',
+					data: {
+						labels: ['Shown', 'Selected'],
+						datasets: [{
+							label: 'number of times', 
+							data: [itemShown, itemSelected],
+							backgroundColor: [
+								'rgba(204,204,0)',
+								'rgba(51, 204, 51)',
+							],
+							borderColor: [
+								'rgba(0,0,0)',
+								'rgba(0,0,0)',
+							],
+							borderWidth: 1
 						}]
+					},
+					options: {
+						scales: {
+							yAxes: [{
+								ticks: {
+									beginAtZero: true
+								}
+							}]
+						}
 					}
-				}
-			});
+				});
+				var secondChartContainer = document.createElement('div');
+				newContainer.append(secondChartContainer);
+				secondChartContainer.setAttribute('style', 'margin-left:2vw;margin-top:1vw;height:20vw;width:20vw;');	
 
+				var secondChart = document.createElement('canvas');
+				secondChartContainer.append(secondChart);
+				var ctxTwo = secondChart.getContext('2d');
+				var totalChart = new Chart(ctxTwo, {
+					type:'bar',
+					data: {
+						labels: ['Aggregate Popularity', 'Popularity with you'],
+						datasets: [{
+							label: 'Percentage selected when shown', 
+							data: [(itemTotalSelected/itemTotalShown)*100, (itemSelected/itemShown)*100],
+							backgroundColor: [
+								'rgba(255,105,55)',
+								'rgba(51, 204, 51)',
+							],
+							borderColor: [
+								'rgba(0,0,0)',
+								'rgba(0,0,0)',
+							],
+							borderWidth: 1
+						}]
+					},
+					options: {
+						scales: {
+							yAxes: [{
+								ticks: {
+									beginAtZero: true
+								}
+							}]
+						}
+					}
+				});
+			} else {
+				productDisplay.height='240vw';
+				treasureChest.setItem(keychainVote[i], JSON.stringify([itemShown, itemSelected]));
+				//continue making results
+				dataToAnalyze.push(itemUserName);
+				dataToAnalyze.push(itemSelected);
+				var newContainer = document.createElement('div');
+				newContainer.setAttribute('style', 'width:24vw;height:32vw;margin-left:6vw;margin-top:2vw;display:inline-block;border-width:2px;border-style:solid;background-color:lightgrey;position:relative;')
+				productDisplay.append(newContainer);
+				var newImage = document.createElement('img');
+				newContainer.append(newImage);
+				newImage.setAttribute('src', productImg[keychainVote[i]]);
+				newImage.setAttribute('style', 'margin-left:4vw;margin-top:2vw;width:16vw;height:16vw;border:2px solid black;');
+				var imageStats = document.createElement('p');
+				imageStats.setAttribute('class', 'productStats');
+				imageStats.setAttribute('style', 'width:18vw;height:3vw;margin-left:2vw;margin-top:1vw;text-align:center;font-size:1vw;');
+				newContainer.append(imageStats);
+				imageStats.textContent = itemUserName+' had '+itemSelected+' votes and was shown '+itemShown+' times';
+				var chartContainer = document.createElement('div');
+				newContainer.append(chartContainer);
+				chartContainer.setAttribute('style', 'margin-left:4vw;margin-top:1vw;height:16vw;width:16vw;');
+
+				var newChart = document.createElement('canvas');
+				chartContainer.append(newChart);
+				var ctx = newChart.getContext('2d');
+				var myChart = new Chart(ctx, {
+					type:'bar',
+					data: {
+						labels: ['Shown', 'Selected'],
+						datasets: [{
+							label: 'number of times', 
+							data: [itemShown, itemSelected],
+							backgroundColor: [
+								'rgba(204,204,0)',
+								'rgba(51, 204, 51)',
+							],
+							borderColor: [
+								'rgba(0,0,0)',
+								'rgba(0,0,0)',
+							],
+							borderWidth: 1
+						}]
+					},
+					options: {
+						scales: {
+							yAxes: [{
+								ticks: {
+									beginAtZero: true
+								}
+							}]
+						}
+					}
+				});
+			}
 		}
-		var dataAnalysis = document.getElementById('dataAnalysis');
-
+		dataAnalysis.style.display = 'block';
 		var doughnutChart = document.createElement('canvas');
 		dataAnalysis.append(doughnutChart);
 		var ctx2 = doughnutChart.getContext('2d');
@@ -207,8 +312,10 @@ function registerVote(displayedProducts, selectedProduct){
 	}
 }
 
+window.focus();
 window.scrollTo(0,0);
 
+productDisplay.setAttribute('height', '20vw');
 var promptForms = document.createElement('form');
 productDisplay.append(promptForms);
 promptForms.setAttribute('style', 'margin-left:25vw;margin-top:5vw;');
