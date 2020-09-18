@@ -18,6 +18,12 @@ function populateForm() {
     newSelection.setAttribute('value', productName);
     newSelection.innerHTML = productName;
   }
+  if (lootChest.getItem('cart') && !cart.items.length){
+    for (let i = 0; i < JSON.parse(lootChest.getItem('cart')).length; i++){
+      cart.items.push(JSON.parse(lootChest.getItem('cart'))[i]);
+    }
+  }
+  cart.saveToLocalStorage();
   updateCounter();
   updateCartPreview();
 }
@@ -44,13 +50,17 @@ function addSelectedItemToCart() {
   var quantityForm = document.getElementById('quantity');
   var quantityDesired = quantityForm.value;
   // TODO: using those, add one item to the Cart
-  if (lootChest.getItem('cart') && cart.items == []){
-    for (let i = 0; i < JSON.parse(lootChest.getItem('cart')).length; i++){
-      cart.items.push(JSON.parse(lootChest.getItem('cart'))[i]);
+  var alreadyExists = false;
+  for (let i = 0; i < cart.items.length; i+=2){
+    if (cart.items[i] == selectedItem) {
+      alreadyExists = true;
+      cart.items[i+1] = parseInt(cart.items[i+1]) + parseInt(quantityDesired);
     }
   }
-  cart.items.push(selectedItem);
-  cart.items.push(quantityDesired);
+  if (!alreadyExists) {
+    cart.items.push(selectedItem);
+    cart.items.push(quantityDesired);
+  }
 }
 
 // TODO: Update the cart count in the header nav with the number of items in the Cart
@@ -70,16 +80,18 @@ function updateCartPreview() {
   // TODO: Add a new element to the cartContents div with that information
   var cartPreview = document.getElementById('cartContents');
   cartPreview.innerHTML = '';
-  for (let i = 0; i < JSON.parse(lootChest.getItem('cart')).length; i+=2) {
+  for (let i = 0; i < cart.items.length; i+=2) {
     var previewItem = document.createElement('p');
     cartPreview.append(previewItem);
-    previewItem.textContent = '• '+JSON.parse(lootChest.getItem('cart'))[i]+' '+JSON.parse(lootChest.getItem('cart'))[i+1];
+    previewItem.textContent = '• '+cart.items[i]+' '+cart.items[i+1];
   }
   //clear form vlaues
   selectElement.value = '';
   quantityForm.value = '';
 }
 
+var quantityForm = document.getElementById('quantity');
+quantityForm.setAttribute('min', '0');
 // Set up the "submit" event listener on the form.
 // This is the trigger for the app. When a user "submits" the form, it will
 // Call that handleSubmit method above and kick off the whole process
