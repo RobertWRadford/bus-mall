@@ -44,7 +44,7 @@ function selectProducts(items, hasRan){
 		for (var i = 0; i < items; i++){
 			keychainShow.pop();
 		}
-	}  
+	}
 	if (treasureChest.getItem(keychainShow[0])) {
 		for (var i = 0; i < keychainShow.length; i++) {
 			hasStored = true;
@@ -69,7 +69,7 @@ function selectProducts(items, hasRan){
 		var newImage = document.createElement('img');
 		newImage.setAttribute('class', 'displayedProduct');
 		newImage.setAttribute('src', productImg[key]);
-		newImage.setAttribute('style', 'width:'+viewWidth+';height:'+viewWidth+';margin-left:8vw;margin-top:1vw;');
+		newImage.setAttribute('style', 'width:'+viewWidth+';height:'+viewWidth+';margin-left:8vw;margin-top:1vw;border:2px solid black');
 		newImage.setAttribute('float', 'left');
 
 		//add the displayed element to an array for later reference
@@ -133,20 +133,20 @@ function registerVote(displayedProducts, selectedProduct){
 				dataToAnalyze.push(itemUserName);
 				dataToAnalyze.push(itemTotalSelected);
 				var newContainer = document.createElement('div');
-				newContainer.setAttribute('style', 'width:24vw;height:48vw;margin-left:6vw;margin-top:2vw;display:inline-block;border-width:2px;border-style:solid;background-color:lightgrey;position:relative;')
+				newContainer.setAttribute('style', 'width:20vw;height:42vw;margin-left:10vw;margin-top:2vw;display:inline-block;border-width:2px;border-style:solid;background-color:lightgrey;position:relative;vertical-align:top;')
 				productDisplay.append(newContainer);
 				var newImage = document.createElement('img');
 				newContainer.append(newImage);
 				newImage.setAttribute('src', productImg[keychainVote[i]]);
-				newImage.setAttribute('style', 'margin-left:4vw;margin-top:2vw;width:16vw;height:16vw;border:2px solid black;');
+				newImage.setAttribute('style', 'margin-left:3vw;margin-top:2vw;width:14vw;height:14vw;border:2px solid black;');
 				var imageStats = document.createElement('p');
 				imageStats.setAttribute('class', 'productStats');
-				imageStats.setAttribute('style', 'width:18vw;height:3vw;margin-left:2vw;margin-top:1vw;text-align:center;font-size:1vw;');
+				imageStats.setAttribute('style', 'width:16vw;height:3vw;margin-left:2vw;margin-top:1vw;text-align:center;font-size:1vw;');
 				newContainer.append(imageStats);
 				imageStats.textContent = itemUserName+' had '+itemSelected+' votes and was shown '+itemShown+' times. Across all polls '+itemUserName+' had '+itemTotalSelected+' votes and was shown '+itemTotalShown+' times.';
 				var chartContainer = document.createElement('div');
 				newContainer.append(chartContainer);
-				chartContainer.setAttribute('style', 'margin-left:4vw;margin-top:1vw;height:10vw;width:16vw;');	
+				chartContainer.setAttribute('style', 'margin-left:2vw;margin-top:1vw;height:10vw;width:16vw;');	
 
 				var newChart = document.createElement('canvas');
 				chartContainer.append(newChart);
@@ -181,7 +181,7 @@ function registerVote(displayedProducts, selectedProduct){
 				});
 				var secondChartContainer = document.createElement('div');
 				newContainer.append(secondChartContainer);
-				secondChartContainer.setAttribute('style', 'margin-left:2vw;margin-top:1vw;height:20vw;width:20vw;');	
+				secondChartContainer.setAttribute('style', 'margin-left:2vw;margin-top:1vw;height:10vw;width:16vw;');	
 
 				var secondChart = document.createElement('canvas');
 				secondChartContainer.append(secondChart);
@@ -244,7 +244,7 @@ function registerVote(displayedProducts, selectedProduct){
 					data: {
 						labels: ['Shown', 'Selected'],
 						datasets: [{
-							label: 'number of times', 
+							label: 'number of times',
 							data: [itemShown, itemSelected],
 							backgroundColor: [
 								'rgba(204,204,0)',
