@@ -1,0 +1,6 @@
+/* TODO: Make it awesome */
+
+@keyframes processedOrder {
+	from {background-color: red;}
+	to {background-color: green;}
+}
